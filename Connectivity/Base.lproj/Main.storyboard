@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ack-QS-sbK">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Navigation Controller-->
+        <scene sceneID="p8H-RR-gL2">
+            <objects>
+                <navigationController id="ack-QS-sbK" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="sng-uc-lL0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="Cwx-9l-nRF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1Rd-9d-Jne" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-602" y="99"/>
+        </scene>
+        <!--角色选择-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -16,11 +36,119 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Z4-LN-yNe">
+                                <rect key="frame" x="152" y="434" width="70" height="33"/>
+                                <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="发送文件"/>
+                                <connections>
+                                    <action selector="sendBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DFO-uk-hfy"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Me-da-5OG">
+                                <rect key="frame" x="152" y="497" width="70" height="33"/>
+                                <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="接收文件"/>
+                                <connections>
+                                    <segue destination="Mah-XQ-dB1" kind="show" identifier="" id="1RC-3m-fYZ"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Me-da-5OG" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="32x-eT-S8O"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Z4-LN-yNe" secondAttribute="bottom" constant="200" id="OKf-JV-w5g"/>
+                            <constraint firstItem="2Z4-LN-yNe" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="haP-QY-hlC"/>
+                            <constraint firstItem="6Me-da-5OG" firstAttribute="top" secondItem="2Z4-LN-yNe" secondAttribute="bottom" constant="30" id="r4Z-Fs-hFB"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="角色选择" id="zXz-5s-alH"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="156" y="99"/>
+        </scene>
+        <!--Title-->
+        <scene sceneID="5ja-H0-1eu">
+            <objects>
+                <viewController id="d1x-bo-sAu" customClass="SendFileViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="QH3-39-1hn"/>
+                        <viewControllerLayoutGuide type="bottom" id="qh2-qH-GsP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="BFj-jN-S40">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aK0-az-afZ">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="pAi-94-LbU"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="本机文件" id="mZi-L2-Bzz">
+                                        <barButtonItem key="rightBarButtonItem" title="取消" id="jwy-pg-CP2">
+                                            <connections>
+                                                <action selector="cancelBtnClicked:" destination="d1x-bo-sAu" id="KIy-Xb-Uth"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KwP-Bk-Sin">
+                                <rect key="frame" x="170" y="224" width="35" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="相册"/>
+                                <connections>
+                                    <action selector="photosBtnClicked:" destination="d1x-bo-sAu" eventType="touchUpInside" id="aCy-Hb-2dW"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiM-Sd-yYT">
+                                <rect key="frame" x="162" y="277" width="52" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="媒体库"/>
+                                <connections>
+                                    <action selector="videosBtnClicked:" destination="d1x-bo-sAu" eventType="touchUpInside" id="OnV-Uv-WzJ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="jiM-Sd-yYT" firstAttribute="centerX" secondItem="BFj-jN-S40" secondAttribute="centerX" id="3NH-Yt-edg"/>
+                            <constraint firstItem="aK0-az-afZ" firstAttribute="top" secondItem="BFj-jN-S40" secondAttribute="top" id="6aU-if-hW1"/>
+                            <constraint firstItem="aK0-az-afZ" firstAttribute="leading" secondItem="BFj-jN-S40" secondAttribute="leading" id="LI1-oi-naW"/>
+                            <constraint firstItem="jiM-Sd-yYT" firstAttribute="top" secondItem="KwP-Bk-Sin" secondAttribute="bottom" constant="20" id="bIb-PN-115"/>
+                            <constraint firstAttribute="trailing" secondItem="aK0-az-afZ" secondAttribute="trailing" id="hk4-7a-K45"/>
+                            <constraint firstItem="KwP-Bk-Sin" firstAttribute="centerX" secondItem="BFj-jN-S40" secondAttribute="centerX" id="r7l-CD-6Cc"/>
+                            <constraint firstItem="KwP-Bk-Sin" firstAttribute="top" secondItem="aK0-az-afZ" secondAttribute="bottom" constant="160" id="usQ-bK-vPL"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="XzQ-Q5-FGf"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="E4a-Zn-VOh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="932" y="-204"/>
+        </scene>
+        <!--接收文件-->
+        <scene sceneID="Rkj-B5-W6U">
+            <objects>
+                <viewController id="Mah-XQ-dB1" customClass="ReciveFileViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fJC-Cy-d8N"/>
+                        <viewControllerLayoutGuide type="bottom" id="Kja-l2-GcG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="J2X-5v-77b">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="接收文件" id="qVY-cH-4rf"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3I8-Pg-qlA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="932" y="540"/>
         </scene>
     </scenes>
 </document>

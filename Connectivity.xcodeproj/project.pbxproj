@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B203EBDA1E236D9E00756E48 /* SendFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B203EBD91E236D9E00756E48 /* SendFileViewController.m */; };
+		B203EBDD1E236DC700756E48 /* ReciveFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */; };
 		B24F76D61E1F305A00CA8146 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76D51E1F305A00CA8146 /* main.m */; };
 		B24F76D91E1F305A00CA8146 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76D81E1F305A00CA8146 /* AppDelegate.m */; };
 		B24F76DC1E1F305A00CA8146 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76DB1E1F305A00CA8146 /* ViewController.m */; };
@@ -28,6 +30,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B203EBD81E236D9E00756E48 /* SendFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendFileViewController.h; sourceTree = "<group>"; };
+		B203EBD91E236D9E00756E48 /* SendFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendFileViewController.m; sourceTree = "<group>"; };
+		B203EBDB1E236DC700756E48 /* ReciveFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReciveFileViewController.h; sourceTree = "<group>"; };
+		B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReciveFileViewController.m; sourceTree = "<group>"; };
 		B24F76D11E1F305A00CA8146 /* Connectivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connectivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B24F76D51E1F305A00CA8146 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B24F76D71E1F305A00CA8146 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -87,6 +93,10 @@
 				B24F76D81E1F305A00CA8146 /* AppDelegate.m */,
 				B24F76DA1E1F305A00CA8146 /* ViewController.h */,
 				B24F76DB1E1F305A00CA8146 /* ViewController.m */,
+				B203EBD81E236D9E00756E48 /* SendFileViewController.h */,
+				B203EBD91E236D9E00756E48 /* SendFileViewController.m */,
+				B203EBDB1E236DC700756E48 /* ReciveFileViewController.h */,
+				B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */,
 				B24F76DD1E1F305A00CA8146 /* Main.storyboard */,
 				B24F76E31E1F305A00CA8146 /* Assets.xcassets */,
 				B24F76E51E1F305A00CA8146 /* LaunchScreen.storyboard */,
@@ -220,8 +230,10 @@
 			files = (
 				B24F76E21E1F305A00CA8146 /* Connectivity.xcdatamodeld in Sources */,
 				B24F76DC1E1F305A00CA8146 /* ViewController.m in Sources */,
+				B203EBDD1E236DC700756E48 /* ReciveFileViewController.m in Sources */,
 				B24F76D91E1F305A00CA8146 /* AppDelegate.m in Sources */,
 				B24F76D61E1F305A00CA8146 /* main.m in Sources */,
+				B203EBDA1E236D9E00756E48 /* SendFileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +369,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = HV78NKBU8W;
 				INFOPLIST_FILE = Connectivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Pabei.Connectivity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -369,6 +382,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = HV78NKBU8W;
 				INFOPLIST_FILE = Connectivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Pabei.Connectivity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -418,6 +432,7 @@
 				B24F76F81E1F305A00CA8146 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B24F76F91E1F305A00CA8146 /* Build configuration list for PBXNativeTarget "ConnectivityUITests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +441,7 @@
 				B24F76FB1E1F305A00CA8146 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
