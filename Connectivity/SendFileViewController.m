@@ -10,12 +10,13 @@
 #import "AnimationView.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-@interface SendFileViewController ()<MCSessionDelegate, MCBrowserViewControllerDelegate>
+@interface SendFileViewController ()<MCSessionDelegate, MCAdvertiserAssistantDelegate>
+
+@property (weak, nonatomic) IBOutlet UILabel *tipLable;
 
 @property (strong, nonatomic) NSTimer *timer;
-@property (weak, nonatomic) IBOutlet UILabel *tipLable;
 @property (strong,nonatomic) MCSession *session;
-@property (strong,nonatomic) MCBrowserViewController *browserController;
+@property (strong,nonatomic) MCAdvertiserAssistant *advertiserAssistant;
 
 @end
 
@@ -66,9 +67,10 @@
     self.session = [[MCSession alloc] initWithPeer:peerID];
     self.session.delegate = self;
     
-    self.browserController = [[MCBrowserViewController alloc] initWithServiceType:@"rsp-Sender" session:self.session];
-    self.browserController.delegate = self;
-    [self presentViewController:self.browserController animated:YES completion:nil];
+    //创建广播
+    self.advertiserAssistant=[[MCAdvertiserAssistant alloc]initWithServiceType:@"cmj-stream" discoveryInfo:nil session:_session];
+    self.advertiserAssistant.delegate = self;
+    [self.advertiserAssistant start];
 }
 
 #pragma mark - MCBrowserViewControllerDelegate
