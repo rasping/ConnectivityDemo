@@ -70,67 +70,6 @@
             </objects>
             <point key="canvasLocation" x="156" y="99"/>
         </scene>
-        <!--Title-->
-        <scene sceneID="5ja-H0-1eu">
-            <objects>
-                <viewController id="d1x-bo-sAu" customClass="SendFileViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="QH3-39-1hn"/>
-                        <viewControllerLayoutGuide type="bottom" id="qh2-qH-GsP"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="BFj-jN-S40">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aK0-az-afZ">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="pAi-94-LbU"/>
-                                </constraints>
-                                <items>
-                                    <navigationItem title="本机文件" id="mZi-L2-Bzz">
-                                        <barButtonItem key="rightBarButtonItem" title="取消" id="jwy-pg-CP2">
-                                            <connections>
-                                                <action selector="cancelBtnClicked:" destination="d1x-bo-sAu" id="KIy-Xb-Uth"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KwP-Bk-Sin">
-                                <rect key="frame" x="170" y="224" width="35" height="33"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="相册"/>
-                                <connections>
-                                    <action selector="photosBtnClicked:" destination="d1x-bo-sAu" eventType="touchUpInside" id="aCy-Hb-2dW"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiM-Sd-yYT">
-                                <rect key="frame" x="162" y="277" width="52" height="33"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="媒体库"/>
-                                <connections>
-                                    <action selector="videosBtnClicked:" destination="d1x-bo-sAu" eventType="touchUpInside" id="OnV-Uv-WzJ"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="jiM-Sd-yYT" firstAttribute="centerX" secondItem="BFj-jN-S40" secondAttribute="centerX" id="3NH-Yt-edg"/>
-                            <constraint firstItem="aK0-az-afZ" firstAttribute="top" secondItem="BFj-jN-S40" secondAttribute="top" id="6aU-if-hW1"/>
-                            <constraint firstItem="aK0-az-afZ" firstAttribute="leading" secondItem="BFj-jN-S40" secondAttribute="leading" id="LI1-oi-naW"/>
-                            <constraint firstItem="jiM-Sd-yYT" firstAttribute="top" secondItem="KwP-Bk-Sin" secondAttribute="bottom" constant="20" id="bIb-PN-115"/>
-                            <constraint firstAttribute="trailing" secondItem="aK0-az-afZ" secondAttribute="trailing" id="hk4-7a-K45"/>
-                            <constraint firstItem="KwP-Bk-Sin" firstAttribute="centerX" secondItem="BFj-jN-S40" secondAttribute="centerX" id="r7l-CD-6Cc"/>
-                            <constraint firstItem="KwP-Bk-Sin" firstAttribute="top" secondItem="aK0-az-afZ" secondAttribute="bottom" constant="160" id="usQ-bK-vPL"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" title="Title" id="XzQ-Q5-FGf"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="E4a-Zn-VOh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="932" y="-204"/>
-        </scene>
         <!--接收文件-->
         <scene sceneID="Rkj-B5-W6U">
             <objects>

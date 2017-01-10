@@ -76,7 +76,10 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    NSLog(@"%@", info);
+    [self dismissViewControllerAnimated:YES completion:^{
+        SendFileViewController *sendFileVC = [[SendFileViewController alloc] initWithFilePath:info[UIImagePickerControllerReferenceURL]];
+        [self.navigationController pushViewController:sendFileVC animated:YES];
+    }];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker

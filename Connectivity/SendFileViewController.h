@@ -10,4 +10,11 @@
 
 @interface SendFileViewController : UIViewController
 
+/**
+ 文件路径
+ */
+@property (copy, nonatomic, readonly) NSString *filePath;
+
+- (instancetype)initWithFilePath:(NSString *)filePath;
+
 @end

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		B203EBDA1E236D9E00756E48 /* SendFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B203EBD91E236D9E00756E48 /* SendFileViewController.m */; };
 		B203EBDD1E236DC700756E48 /* ReciveFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */; };
+		B20451E21E24C42600EB3BD1 /* SendFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B20451E11E24C42600EB3BD1 /* SendFileViewController.xib */; };
+		B20451E51E24C72B00EB3BD1 /* AnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B20451E41E24C72B00EB3BD1 /* AnimationView.m */; };
 		B24F76D61E1F305A00CA8146 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76D51E1F305A00CA8146 /* main.m */; };
 		B24F76D91E1F305A00CA8146 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76D81E1F305A00CA8146 /* AppDelegate.m */; };
 		B24F76DC1E1F305A00CA8146 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76DB1E1F305A00CA8146 /* ViewController.m */; };
@@ -34,6 +36,9 @@
 		B203EBD91E236D9E00756E48 /* SendFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendFileViewController.m; sourceTree = "<group>"; };
 		B203EBDB1E236DC700756E48 /* ReciveFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReciveFileViewController.h; sourceTree = "<group>"; };
 		B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReciveFileViewController.m; sourceTree = "<group>"; };
+		B20451E11E24C42600EB3BD1 /* SendFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SendFileViewController.xib; sourceTree = "<group>"; };
+		B20451E31E24C72B00EB3BD1 /* AnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationView.h; sourceTree = "<group>"; };
+		B20451E41E24C72B00EB3BD1 /* AnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationView.m; sourceTree = "<group>"; };
 		B24F76D11E1F305A00CA8146 /* Connectivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connectivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B24F76D51E1F305A00CA8146 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B24F76D71E1F305A00CA8146 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -95,6 +100,9 @@
 				B24F76DB1E1F305A00CA8146 /* ViewController.m */,
 				B203EBD81E236D9E00756E48 /* SendFileViewController.h */,
 				B203EBD91E236D9E00756E48 /* SendFileViewController.m */,
+				B20451E11E24C42600EB3BD1 /* SendFileViewController.xib */,
+				B20451E31E24C72B00EB3BD1 /* AnimationView.h */,
+				B20451E41E24C72B00EB3BD1 /* AnimationView.m */,
 				B203EBDB1E236DC700756E48 /* ReciveFileViewController.h */,
 				B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */,
 				B24F76DD1E1F305A00CA8146 /* Main.storyboard */,
@@ -208,6 +216,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B20451E21E24C42600EB3BD1 /* SendFileViewController.xib in Resources */,
 				B24F76E71E1F305A00CA8146 /* LaunchScreen.storyboard in Resources */,
 				B24F76E41E1F305A00CA8146 /* Assets.xcassets in Resources */,
 				B24F76DF1E1F305A00CA8146 /* Main.storyboard in Resources */,
@@ -233,6 +242,7 @@
 				B203EBDD1E236DC700756E48 /* ReciveFileViewController.m in Sources */,
 				B24F76D91E1F305A00CA8146 /* AppDelegate.m in Sources */,
 				B24F76D61E1F305A00CA8146 /* main.m in Sources */,
+				B20451E51E24C72B00EB3BD1 /* AnimationView.m in Sources */,
 				B203EBDA1E236D9E00756E48 /* SendFileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
