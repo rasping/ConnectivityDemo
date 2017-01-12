@@ -8,15 +8,20 @@
 
 #import "SendFileViewController.h"
 #import "AnimationView.h"
+#import "Masonry.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-@interface SendFileViewController ()<MCSessionDelegate, MCAdvertiserAssistantDelegate>
+@interface SendFileViewController ()<MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate>
 
-@property (weak, nonatomic) IBOutlet UILabel *tipLable;
+@property (weak, nonatomic) UILabel *tipLable;
+@property (weak, nonatomic) UIButton *receiverBtn;
 
 @property (strong, nonatomic) NSTimer *timer;
+@property (weak, nonatomic) AnimationView *animationView;
 @property (strong,nonatomic) MCSession *session;
-@property (strong,nonatomic) MCAdvertiserAssistant *advertiserAssistant;
+@property (strong,nonatomic) MCNearbyServiceAdvertiser *nearbyServiceAdveriser;
+@property (strong, nonatomic) MCNearbyServiceBrowser *nearbyServiceBrowser;
+@property (strong, nonatomic) MCPeerID *peerID;
 
 @end
 
@@ -26,8 +31,32 @@
 {
     [super viewDidLoad];
     
+    //MultipeerConnectivity.framework了解
+    //    MCAdvertiserAssistant //广播助手类 可以接收，并处理用户请求连接的响应。没有回调，会弹出默认的提示框，并处理连接
+    
+    //    MCNearbyServiceAdvertiser //附近广播服务类 可以接收并处理用户连接的响应。但是，这个类会有回调，告知用户要与你的设备连接，然后可以自定义提示框，以及自定义连接处理
+    //    MCNearbyServiceBrowser //附近搜索服务类 用于所搜附近的用户，并可以对搜索到的用户发出邀请加入某个回话中
+    //    MCPeerID //点ID类 代表一个用户
+    //    MCSession //回话类 启用和管理Multipeer连接回话中的所有人之间的沟通通过Session个别人发送数据
+    //    MCBrowserViewController //提供一个标准的用户界面 该界面允许用户进行选择附近设备peer来加入一个session
+    
+    //注意：根据serviceType创建的对象，该serviceType命名规则：serviceType=由ASCII字母、数字和“-”组成的短文本串，最多15个字符。通常，一个服务的名字应该由应用程序的名字开始，后边跟“-”和一个独特的描述符号。如果不符合，会报错的。
+    
+    //使用注意：无论是接收者还是发送者都需要在广播数据的同时发送数据，方便发现对方建立连接回话；数据的传输必须要在回话建立完成后才能开始。
+    
     self.title = @"发送文件";
+    [self addOwnViews];
     [self scanNearbyPeer];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    self.receiverBtn.hidden = NO;
+    CATransition *transition = [CATransition animation];
+    transition.duration = 2.0f;
+    transition.type = @"rippleEffect";
+    [self.receiverBtn.layer addAnimation:transition forKey:nil];
+    [self.view bringSubviewToFront:self.receiverBtn];
 }
 
 #pragma mark - Public
@@ -42,13 +71,65 @@
 
 #pragma mark - Private
 
+- (void)addOwnViews
+{
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    //tipLable
+    UILabel *lable = [[UILabel alloc] init];
+    lable.text = @"正在搜索附近的设备...";
+    lable.textColor = [UIColor colorWithRed:23/255.0 green:1.0 blue:1.0 alpha:1.0];
+    [[UIApplication sharedApplication].keyWindow addSubview:lable];
+    __weak typeof(self) ws = self;
+    [lable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(ws.view.mas_centerX);
+        make.top.mas_equalTo()
+    }];
+    
+    //receiverBtn
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn addTarget:self action:@selector(receiverBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [[UIApplication sharedApplication].keyWindow addSubview:btn];
+    [btn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(ws.view.mas_centerX);
+    }];
+    self.receiverBtn = btn;
+    
+    self.receiverBtn.clipsToBounds = YES;
+    self.receiverBtn.layer.cornerRadius = 40;
+}
+
+//扫描附近设备
+- (void)scanNearbyPeer
+{
+    //开启扫描动画
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(clickAnimation) userInfo:nil repeats:YES];
+    
+    //创建回话
+    MCPeerID *peerID = [[MCPeerID alloc] initWithDisplayName:[[UIDevice currentDevice] name]];
+    self.session = [[MCSession alloc] initWithPeer:peerID];
+    self.session.delegate = self;
+    
+    //广播通知(广播是通过serviceType来区分，所以监听广播的serviceType必须相同)
+    self.nearbyServiceAdveriser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:peerID discoveryInfo:nil serviceType:@"rsp-sender"];
+    self.nearbyServiceAdveriser.delegate = self;
+    [self.nearbyServiceAdveriser startAdvertisingPeer];
+    
+    //监听广播
+    self.nearbyServiceBrowser = [[MCNearbyServiceBrowser alloc] initWithPeer:peerID serviceType:@"rsp-reciver"];
+    self.nearbyServiceBrowser.delegate = self;
+    [self.nearbyServiceBrowser startBrowsingForPeers];
+}
+
 //扫描动画
 -(void)clickAnimation
 {
     CGFloat w = [UIScreen mainScreen].bounds.size.width - 60;
     AnimationView *animationView = [[AnimationView alloc] initWithFrame:CGRectMake(30, 150, w, w)];
+    animationView.userInteractionEnabled = NO;
     animationView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:animationView];
+    self.animationView = animationView;
     [UIView animateWithDuration:2 animations:^{
         animationView.transform=CGAffineTransformScale(animationView.transform, 4, 4);
         animationView.alpha=0;
@@ -58,78 +139,164 @@
     
 }
 
-//扫描附近设备
-- (void)scanNearbyPeer
+#pragma mark - Action
+
+- (IBAction)receiverBtnClicked:(UIButton *)btn
 {
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(clickAnimation) userInfo:nil repeats:YES];
+    //发出邀请
+    //context 携带请求的附加信息
+    NSData *data = [self.nearbyServiceBrowser.myPeerID.displayName dataUsingEncoding:NSUTF8StringEncoding];
+    [self.nearbyServiceBrowser invitePeer:self.peerID toSession:self.session withContext:data timeout:30];
     
-    MCPeerID *peerID = [[MCPeerID alloc]initWithDisplayName:@"发送者"];
-    self.session = [[MCSession alloc] initWithPeer:peerID];
-    self.session.delegate = self;
-    
-    //创建广播
-    self.advertiserAssistant=[[MCAdvertiserAssistant alloc]initWithServiceType:@"cmj-stream" discoveryInfo:nil session:_session];
-    self.advertiserAssistant.delegate = self;
-    [self.advertiserAssistant start];
+    //停止广播
+    [self.nearbyServiceAdveriser stopAdvertisingPeer];
 }
 
-#pragma mark - MCBrowserViewControllerDelegate
+#pragma mark - MCNearbyServiceBrowserDelegate
 
-// Notifies the delegate, when the user taps the done button.
-- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController
+// 发现了附近的广播节点
+- (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID
+      withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 {
+    NSLog(@"发现了节点：%@", peerID.displayName);
+    //这里只考虑一个节点的情况
+    [browser stopBrowsingForPeers];
     
+    //更新UI显示
+    [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.receiverBtn.hidden = NO;
+    } completion:nil];
+    
+    self.peerID = peerID;
 }
 
-// Notifies delegate that the user taps the cancel button.
-- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController
+// 广播节点丢失
+- (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID
 {
+    NSLog(@"丢失了节点：%@", peerID.displayName);
+    //这里只考虑一个节点的情况
+    [browser startBrowsingForPeers];
     
+    //更新UI显示
+    self.receiverBtn.hidden = YES;
+    self.tipLable.hidden = NO;
+    self.animationView.hidden = NO;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(clickAnimation) userInfo:nil repeats:YES];
 }
 
-// Notifies delegate that a peer was found; discoveryInfo can be used to
-// determine whether the peer should be presented to the user, and the
-// delegate should return a YES if the peer should be presented; this method
-// is optional, if not implemented every nearby peer will be presented to
-// the user.
-- (BOOL)browserViewController:(MCBrowserViewController *)browserViewController
-      shouldPresentNearbyPeer:(MCPeerID *)peerID
-            withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
+// 搜索失败回调
+- (void)browser:(MCNearbyServiceBrowser *)browser didNotStartBrowsingForPeers:(NSError *)error
 {
-    return YES;
+    [browser stopBrowsingForPeers];
+    NSLog(@"搜索出错：%@", error.localizedDescription);
+}
+
+#pragma mark - MCNearbyServiceAdvertiserDelegate
+
+// 收到节点邀请回调
+- (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser
+    didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler
+{
+    NSLog(@"收到%@节点的连接请求", peerID.displayName);
+    [advertiser stopAdvertisingPeer];
+    
+    //交互选择框
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@请求与你建立连接", peerID.displayName] preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *accept = [UIAlertAction actionWithTitle:@"接受" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        invitationHandler(YES, self.session);
+    }];
+    [alert addAction:accept];
+    UIAlertAction *reject = [UIAlertAction actionWithTitle:@"拒绝" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        invitationHandler(NO, self.session);
+    }];
+    [alert addAction:reject];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+// 广播失败回调
+- (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error
+{
+    NSLog(@"%@节点广播失败", advertiser.myPeerID.displayName);
 }
 
 #pragma mark - MCSessionDelegate
 
-// 回话状态改变回调
-- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
+// 与节点首次建立连接时调用，用以验证节点提供的证书，这个回调只有在session是加密会话时调用
+- (void)session:(MCSession *)session didReceiveCertificate:(nullable NSArray *)certificate fromPeer:(MCPeerID *)peerID certificateHandler:(void (^)(BOOL accept))certificateHandler
 {
     
+}
+
+// 会话状态改变回调
+- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
+{
+    switch (state) {
+        case MCSessionStateNotConnected://未连接
+            NSLog(@"未连接");
+            break;
+        case MCSessionStateConnecting://连接中
+            NSLog(@"连接中");
+            break;
+        case MCSessionStateConnected://连接完成
+        {
+            NSLog(@"连接完成");
+            
+            //这里利用数据源的方式来发送数据
+            NSURL *url = [NSURL URLWithString:_filePath];
+            [self.session sendResourceAtURL:url withName:[_filePath lastPathComponent] toPeer:[self.session.connectedPeers firstObject] withCompletionHandler:^(NSError * _Nullable error) {
+                NSLog(@"发送源数据发生错误：%@", [error localizedDescription]);
+            }];
+        }
+            break;
+    }
 }
 
 // 普通数据传输
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
 {
-    
+    NSLog(@"普通数据%@", peerID.displayName);
 }
 
 // 数据流传输
 - (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID
 {
-    
+    NSLog(@"数据流%@", peerID.displayName);
 }
 
-// 数据源传输
+// 数据源传输开始
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress
 {
-    
+    NSLog(@"数据传输开始");
+    //KVO观察
+    [progress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 // 数据传输完成回调
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(nullable NSError *)error
 {
-    
+    NSLog(@"数据传输结束");
+    [session disconnect];
+//    NSString *destinationPath = @"";
+//    NSURL *destinationURL = [NSURL fileURLWithPath:destinationPath];
+//    //判断文件是否存在，存在则删除
+//    if ([[NSFileManager defaultManager] isDeletableFileAtPath:destinationPath]) {
+//        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:nil];
+//    }
+//    //转移文件
+//    NSError *error1 = nil;
+//    if (![[NSFileManager defaultManager] moveItemAtURL:localURL toURL:destinationURL  error:&error1]) {
+//        NSLog(@"[Error] %@", error1);
+//    }
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSProgress *progress = (NSProgress *)object;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        int64_t numberCom = progress.completedUnitCount;
+        int64_t numberTotal = progress.totalUnitCount;
+        NSLog(@"%lld/%lld", numberCom, numberTotal);
+    });
+}
 
 @end

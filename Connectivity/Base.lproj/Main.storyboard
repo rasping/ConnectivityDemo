@@ -81,9 +81,40 @@
                     <view key="view" contentMode="scaleToFill" id="J2X-5v-77b">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正在搜索附近的设备..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iyJ-ws-nii">
+                                <rect key="frame" x="97.5" y="124" width="180" height="21.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <color key="textColor" red="0.074509803920000006" green="0.41176470590000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x7y-zV-fXx">
+                                <rect key="frame" x="147" y="170" width="80" height="80"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="Bp9-Rl-tVH"/>
+                                    <constraint firstAttribute="height" constant="80" id="fe2-Ln-JUl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="发送者"/>
+                                <connections>
+                                    <action selector="senderBtnClicked:" destination="Mah-XQ-dB1" eventType="touchUpInside" id="FC8-vT-bce"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="iyJ-ws-nii" firstAttribute="top" secondItem="fJC-Cy-d8N" secondAttribute="bottom" constant="60" id="9M2-Pl-XI4"/>
+                            <constraint firstItem="x7y-zV-fXx" firstAttribute="top" secondItem="iyJ-ws-nii" secondAttribute="bottom" constant="25" id="Hh6-vH-xQx"/>
+                            <constraint firstItem="x7y-zV-fXx" firstAttribute="centerX" secondItem="J2X-5v-77b" secondAttribute="centerX" id="LQx-E6-gUX"/>
+                            <constraint firstItem="iyJ-ws-nii" firstAttribute="centerX" secondItem="J2X-5v-77b" secondAttribute="centerX" id="ZBg-bl-AzK"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="接收文件" id="qVY-cH-4rf"/>
+                    <connections>
+                        <outlet property="senderBtn" destination="x7y-zV-fXx" id="PqC-tu-Kgt"/>
+                        <outlet property="tipLable" destination="iyJ-ws-nii" id="QBi-EI-I3p"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3I8-Pg-qlA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
