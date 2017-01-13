@@ -10,11 +10,12 @@
 #import "AnimationView.h"
 #import "Masonry.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "ProgressIconBtn.h"
 
 @interface SendFileViewController ()<MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate>
 
 @property (weak, nonatomic) UILabel *tipLable;
-@property (weak, nonatomic) UIButton *receiverBtn;
+@property (weak, nonatomic) ProgressIconBtn *receiverBtn;
 
 @property (strong, nonatomic) NSTimer *timer;
 @property (weak, nonatomic) AnimationView *animationView;
@@ -22,6 +23,7 @@
 @property (strong,nonatomic) MCNearbyServiceAdvertiser *nearbyServiceAdveriser;
 @property (strong, nonatomic) MCNearbyServiceBrowser *nearbyServiceBrowser;
 @property (strong, nonatomic) MCPeerID *peerID;
+@property (strong, nonatomic) NSProgress *progress;
 
 @end
 
@@ -49,19 +51,28 @@
     [self scanNearbyPeer];
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)viewDidDisappear:(BOOL)animated
 {
-    self.receiverBtn.hidden = NO;
-    CATransition *transition = [CATransition animation];
-    transition.duration = 2.0f;
-    transition.type = @"rippleEffect";
-    [self.receiverBtn.layer addAnimation:transition forKey:nil];
-    [self.view bringSubviewToFront:self.receiverBtn];
+    [super viewWillDisappear:animated];
+    
+    if (!self.receiverBtn.hidden) {
+        self.receiverBtn.hidden = YES;
+    }
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+    if (self.nearbyServiceAdveriser) {
+        [self.nearbyServiceAdveriser stopAdvertisingPeer];
+    }
+    if (self.nearbyServiceBrowser) {
+        [self.nearbyServiceBrowser stopBrowsingForPeers];
+    }
 }
 
 #pragma mark - Public
 
-- (instancetype)initWithFilePath:(NSString *)filePath
+- (instancetype)initWithFilePath:(NSURL *)filePath
 {
     if (self = [super init]) {
         _filePath = filePath;
@@ -79,24 +90,23 @@
     UILabel *lable = [[UILabel alloc] init];
     lable.text = @"正在搜索附近的设备...";
     lable.textColor = [UIColor colorWithRed:23/255.0 green:1.0 blue:1.0 alpha:1.0];
-    [[UIApplication sharedApplication].keyWindow addSubview:lable];
+    [self.view addSubview:lable];
     __weak typeof(self) ws = self;
     [lable mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(ws.view.mas_centerX);
-        make.top.mas_equalTo()
+        make.top.offset(100);
     }];
     
-    //receiverBtn
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    //progressIconBtn
+    ProgressIconBtn *btn = [[ProgressIconBtn alloc] init];
+    CGFloat btnWH = 100;
+    btn.frame = CGRectMake(0, 0, btnWH, btnWH);
+    btn.center = CGPointMake(self.view.center.x, 180);
+    btn.backgroundColor = [UIColor clearColor];
+    btn.hidden = YES;
     [btn addTarget:self action:@selector(receiverBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:btn];
-    [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.mas_equalTo(ws.view.mas_centerX);
-    }];
     self.receiverBtn = btn;
-    
-    self.receiverBtn.clipsToBounds = YES;
-    self.receiverBtn.layer.cornerRadius = 40;
 }
 
 //扫描附近设备
@@ -107,7 +117,7 @@
     
     //创建回话
     MCPeerID *peerID = [[MCPeerID alloc] initWithDisplayName:[[UIDevice currentDevice] name]];
-    self.session = [[MCSession alloc] initWithPeer:peerID];
+    self.session = [[MCSession alloc] initWithPeer:peerID securityIdentity:nil encryptionPreference:MCEncryptionRequired];
     self.session.delegate = self;
     
     //广播通知(广播是通过serviceType来区分，所以监听广播的serviceType必须相同)
@@ -116,7 +126,7 @@
     [self.nearbyServiceAdveriser startAdvertisingPeer];
     
     //监听广播
-    self.nearbyServiceBrowser = [[MCNearbyServiceBrowser alloc] initWithPeer:peerID serviceType:@"rsp-reciver"];
+    self.nearbyServiceBrowser = [[MCNearbyServiceBrowser alloc] initWithPeer:peerID serviceType:@"rsp-receiver"];
     self.nearbyServiceBrowser.delegate = self;
     [self.nearbyServiceBrowser startBrowsingForPeers];
 }
@@ -139,17 +149,41 @@
     
 }
 
+//显示扫描到的节点
+- (void)showPeer
+{
+    self.receiverBtn.hidden = NO;
+    self.receiverBtn.nickName.text = self.peerID.displayName;
+    
+    CATransition *transition = [CATransition animation];
+    transition.duration = 1.5f;
+    transition.type = @"rippleEffect";
+    [self.receiverBtn.layer addAnimation:transition forKey:nil];
+    [self.view bringSubviewToFront:self.receiverBtn];
+}
+
+//隐藏扫描到的节点
+- (void)hidePeer
+{
+    CATransition *transition = [CATransition animation];
+    transition.duration = 1.5f;
+    transition.type = @"rippleEffect";
+    [self.receiverBtn.layer addAnimation:transition forKey:nil];
+    [self.view bringSubviewToFront:self.receiverBtn];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.receiverBtn.hidden = YES;
+    });
+}
+
 #pragma mark - Action
 
-- (IBAction)receiverBtnClicked:(UIButton *)btn
+- (void)receiverBtnClicked:(UIButton *)btn
 {
     //发出邀请
     //context 携带请求的附加信息
-    NSData *data = [self.nearbyServiceBrowser.myPeerID.displayName dataUsingEncoding:NSUTF8StringEncoding];
-    [self.nearbyServiceBrowser invitePeer:self.peerID toSession:self.session withContext:data timeout:30];
-    
-    //停止广播
-    [self.nearbyServiceAdveriser stopAdvertisingPeer];
+    [self.nearbyServiceBrowser invitePeer:self.peerID toSession:self.session withContext:nil timeout:3.0];
+    self.receiverBtn.state = BtnStateConnecting;
 }
 
 #pragma mark - MCNearbyServiceBrowserDelegate
@@ -159,15 +193,13 @@
       withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 {
     NSLog(@"发现了节点：%@", peerID.displayName);
-    //这里只考虑一个节点的情况
+    //这里只考虑一个节点的情况:发现节点就停止搜索
     [browser stopBrowsingForPeers];
     
-    //更新UI显示
-    [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.receiverBtn.hidden = NO;
-    } completion:nil];
-    
     self.peerID = peerID;
+    
+    //更新UI显示
+    [self showPeer];
 }
 
 // 广播节点丢失
@@ -177,11 +209,10 @@
     //这里只考虑一个节点的情况
     [browser startBrowsingForPeers];
     
+    self.peerID = nil;
+    
     //更新UI显示
-    self.receiverBtn.hidden = YES;
-    self.tipLable.hidden = NO;
-    self.animationView.hidden = NO;
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(clickAnimation) userInfo:nil repeats:YES];
+    [self hidePeer];
 }
 
 // 搜索失败回调
@@ -197,39 +228,22 @@
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser
     didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler
 {
-    NSLog(@"收到%@节点的连接请求", peerID.displayName);
-    [advertiser stopAdvertisingPeer];
-    
-    //交互选择框
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@请求与你建立连接", peerID.displayName] preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *accept = [UIAlertAction actionWithTitle:@"接受" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        invitationHandler(YES, self.session);
-    }];
-    [alert addAction:accept];
-    UIAlertAction *reject = [UIAlertAction actionWithTitle:@"拒绝" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        invitationHandler(NO, self.session);
-    }];
-    [alert addAction:reject];
-    [self presentViewController:alert animated:YES completion:nil];
+    //只有发送者发出邀请，接收者接收邀请
 }
 
 // 广播失败回调
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error
 {
+    [advertiser stopAdvertisingPeer];
     NSLog(@"%@节点广播失败", advertiser.myPeerID.displayName);
 }
 
 #pragma mark - MCSessionDelegate
 
-// 与节点首次建立连接时调用，用以验证节点提供的证书，这个回调只有在session是加密会话时调用
-- (void)session:(MCSession *)session didReceiveCertificate:(nullable NSArray *)certificate fromPeer:(MCPeerID *)peerID certificateHandler:(void (^)(BOOL accept))certificateHandler
-{
-    
-}
-
 // 会话状态改变回调
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
 {
+    self.receiverBtn.state = (BtnState)state;
     switch (state) {
         case MCSessionStateNotConnected://未连接
             NSLog(@"未连接");
@@ -240,21 +254,25 @@
         case MCSessionStateConnected://连接完成
         {
             NSLog(@"连接完成");
-            
             //这里利用数据源的方式来发送数据
-            NSURL *url = [NSURL URLWithString:_filePath];
-            [self.session sendResourceAtURL:url withName:[_filePath lastPathComponent] toPeer:[self.session.connectedPeers firstObject] withCompletionHandler:^(NSError * _Nullable error) {
-                NSLog(@"发送源数据发生错误：%@", [error localizedDescription]);
-            }];
+//            [self.session sendResourceAtURL:_filePath withName:[_filePath lastPathComponent] toPeer:[self.session.connectedPeers firstObject] withCompletionHandler:^(NSError * _Nullable error) {
+//                NSLog(@"发送源数据发生错误：%@", [error localizedDescription]);
+//            }];
         }
             break;
     }
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    NSString *data = @"hello";
+    [self.session sendData:[data dataUsingEncoding:NSUTF8StringEncoding] toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:nil];
+}
+
 // 普通数据传输
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
 {
-    NSLog(@"普通数据%@", peerID.displayName);
+    NSLog(@"普通数据%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 }
 
 // 数据流传输
@@ -268,21 +286,25 @@
 {
     NSLog(@"数据传输开始");
     //KVO观察
+    self.progress = progress;
     [progress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 // 数据传输完成回调
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(nullable NSError *)error
 {
-    NSLog(@"数据传输结束");
+    NSLog(@"数据传输结束%@", localURL.absoluteString);
+    [self.nearbyServiceAdveriser stopAdvertisingPeer];
+    [self.nearbyServiceBrowser stopBrowsingForPeers];
     [session disconnect];
+    [self.progress removeObserver:self forKeyPath:@"completedUnitCount" context:nil];
+    
+    //转移文件
 //    NSString *destinationPath = @"";
 //    NSURL *destinationURL = [NSURL fileURLWithPath:destinationPath];
-//    //判断文件是否存在，存在则删除
 //    if ([[NSFileManager defaultManager] isDeletableFileAtPath:destinationPath]) {
 //        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:nil];
 //    }
-//    //转移文件
 //    NSError *error1 = nil;
 //    if (![[NSFileManager defaultManager] moveItemAtURL:localURL toURL:destinationURL  error:&error1]) {
 //        NSLog(@"[Error] %@", error1);
@@ -292,10 +314,12 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     NSProgress *progress = (NSProgress *)object;
+    int64_t numberCom = progress.completedUnitCount;
+    int64_t numberTotal = progress.totalUnitCount;
+    CGFloat precentage = numberCom / numberTotal;
+    NSLog(@"%f", precentage);
     dispatch_async(dispatch_get_main_queue(), ^{
-        int64_t numberCom = progress.completedUnitCount;
-        int64_t numberTotal = progress.totalUnitCount;
-        NSLog(@"%lld/%lld", numberCom, numberTotal);
+        [self.receiverBtn setProgressValue:precentage];
     });
 }
 

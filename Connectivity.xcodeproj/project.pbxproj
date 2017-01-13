@@ -28,6 +28,7 @@
 		B24F76E41E1F305A00CA8146 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B24F76E31E1F305A00CA8146 /* Assets.xcassets */; };
 		B24F76E71E1F305A00CA8146 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B24F76E51E1F305A00CA8146 /* LaunchScreen.storyboard */; };
 		B24F76F21E1F305A00CA8146 /* ConnectivityUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76F11E1F305A00CA8146 /* ConnectivityUITests.m */; };
+		B27A6CD01E286B5400CD0475 /* ProgressIconBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = B27A6CCF1E286B5400CD0475 /* ProgressIconBtn.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,8 @@
 		B24F76ED1E1F305A00CA8146 /* ConnectivityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectivityUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B24F76F11E1F305A00CA8146 /* ConnectivityUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConnectivityUITests.m; sourceTree = "<group>"; };
 		B24F76F31E1F305A00CA8146 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B27A6CCE1E286B5400CD0475 /* ProgressIconBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressIconBtn.h; sourceTree = "<group>"; };
+		B27A6CCF1E286B5400CD0475 /* ProgressIconBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressIconBtn.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +171,8 @@
 				B203EBD91E236D9E00756E48 /* SendFileViewController.m */,
 				B20451E31E24C72B00EB3BD1 /* AnimationView.h */,
 				B20451E41E24C72B00EB3BD1 /* AnimationView.m */,
+				B27A6CCE1E286B5400CD0475 /* ProgressIconBtn.h */,
+				B27A6CCF1E286B5400CD0475 /* ProgressIconBtn.m */,
 				B203EBDB1E236DC700756E48 /* ReciveFileViewController.h */,
 				B203EBDC1E236DC700756E48 /* ReciveFileViewController.m */,
 				B24F76DD1E1F305A00CA8146 /* Main.storyboard */,
@@ -303,6 +308,7 @@
 			files = (
 				B249CD011E276BA40017633D /* NSArray+MASAdditions.m in Sources */,
 				B249CD001E276BA40017633D /* MASViewConstraint.m in Sources */,
+				B27A6CD01E286B5400CD0475 /* ProgressIconBtn.m in Sources */,
 				B24F76E21E1F305A00CA8146 /* Connectivity.xcdatamodeld in Sources */,
 				B249CCFD1E276BA40017633D /* MASConstraintMaker.m in Sources */,
 				B249CD031E276BA40017633D /* View+MASAdditions.m in Sources */,

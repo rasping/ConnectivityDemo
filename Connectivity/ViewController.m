@@ -10,12 +10,14 @@
 #import "SendFileViewController.h"
 #import "ReciveFileViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "ProgressIconBtn.h"
+#import <Photos/Photos.h>
 
 @interface ViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 - (IBAction)sendBtnClicked:(UIButton *)btn;
 
-@property (copy, nonatomic) NSString *referenceURL;
+@property (copy, nonatomic) NSURL *referenceURL;
 
 @end
 
@@ -25,29 +27,30 @@
 {
     [super viewDidLoad];
     
-    
+//    ProgressIconBtn *btn = [[ProgressIconBtn alloc] init];
+//    btn.backgroundColor = [UIColor redColor];
+//    btn.frame = CGRectMake(0, 0, 100, 100);
+//    btn.center = self.view.center;
+//    [self.view addSubview:btn];
 }
 
 #pragma mark - Action
 
 - (IBAction)sendBtnClicked:(UIButton *)btn
 {
-//    UIAlertController *alertView = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//    __weak typeof(self) ws = self;
-//    UIAlertAction *photosAction = [UIAlertAction actionWithTitle:@"本地相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [ws accessLocaResource:(NSString *)kUTTypeImage];
-//    }];
-//    [alertView addAction:photosAction];
-//    UIAlertAction *videosAction = [UIAlertAction actionWithTitle:@"本地视频" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [ws accessLocaResource:(NSString *)kUTTypeMovie];
-//    }];
-//    [alertView addAction:videosAction];
-//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-//    [alertView addAction:cancelAction];
-//    [self presentViewController:alertView animated:YES completion:nil];
-    
-    SendFileViewController *sendFileVC = [[SendFileViewController alloc] initWithFilePath:nil];
-    [self.navigationController pushViewController:sendFileVC animated:YES];
+    UIAlertController *alertView = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    __weak typeof(self) ws = self;
+    UIAlertAction *photosAction = [UIAlertAction actionWithTitle:@"本地相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [ws accessLocaResource:(NSString *)kUTTypeImage];
+    }];
+    [alertView addAction:photosAction];
+    UIAlertAction *videosAction = [UIAlertAction actionWithTitle:@"本地视频" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [ws accessLocaResource:(NSString *)kUTTypeMovie];
+    }];
+    [alertView addAction:videosAction];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alertView addAction:cancelAction];
+    [self presentViewController:alertView animated:YES completion:nil];
 }
 
 #pragma mark - Private
@@ -71,9 +74,12 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    self.referenceURL = info[UIImagePickerControllerReferenceURL];
+    //将选取到的资源存储到临时文件夹中，在发送
+    NSURL *refrenceURL = info[UIImagePickerControllerReferenceURL];
+    AVAsset *avasset = [AVAsset assetWithURL:refrenceURL];
+    NSLog(@"%@", avasset);
     [self dismissViewControllerAnimated:YES completion:^{
-        SendFileViewController *sendFileVC = [[SendFileViewController alloc] initWithFilePath:info[UIImagePickerControllerReferenceURL]];
+        SendFileViewController *sendFileVC = [[SendFileViewController alloc] initWithFilePath:self.referenceURL];
         [self.navigationController pushViewController:sendFileVC animated:YES];
     }];
 }
