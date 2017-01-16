@@ -80,7 +80,7 @@
     btn.center = CGPointMake(self.view.center.x, 180);
     btn.backgroundColor = [UIColor clearColor];
     btn.hidden = YES;
-//    [btn addTarget:self action:@selector(senderBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+    //    [btn addTarget:self action:@selector(senderBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:btn];
     self.receiverBtn = btn;
 }
@@ -200,7 +200,7 @@ withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 
 // 收到节点邀请回调
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser
-    didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler
+didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler
 {
     NSLog(@"收到%@节点的连接请求", peerID.displayName);
     [advertiser stopAdvertisingPeer];
@@ -229,7 +229,6 @@ withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 // 会话状态改变回调
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
 {
-    self.receiverBtn.state = (BtnState)state;
     switch (state) {
         case MCSessionStateNotConnected://未连接
             NSLog(@"未连接");
@@ -269,33 +268,50 @@ withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 // 数据传输完成回调
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(nullable NSError *)error
 {
-    NSLog(@"数据传输结束%@", localURL.absoluteString);
+    if (error) {
+        NSLog(@"数据传输结束%@----%@", localURL.absoluteString, error);
+    }else {
+        NSString *destinationPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:resourceName];
+        NSURL *destinationURL = [NSURL fileURLWithPath:destinationPath];
+        //判断文件是否存在，存在则删除
+        if ([[NSFileManager defaultManager] isDeletableFileAtPath:destinationPath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:nil];
+        }
+        //转移文件
+        NSError *error1 = nil;
+        if (![[NSFileManager defaultManager] moveItemAtURL:localURL toURL:destinationURL  error:&error1]) {
+            NSLog(@"移动文件出错：error = %@", error1.localizedDescription);
+        }else {
+            __weak typeof(self) ws = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *message = [NSString stringWithFormat:@"%@", resourceName];
+                NSError *error = nil;
+                NSFileManager *manager = [NSFileManager defaultManager];
+                NSDictionary *attrs = [manager attributesOfItemAtPath:destinationPath error:&error];
+                if (error) {
+                    NSLog(@"读取文件属性出错：error = %@", error.localizedDescription);
+                }else {
+                    NSLog(@"文件存储路径%@", destinationPath);
+                    NSLog(@"文件大小%@", attrs[NSFileSize]);
+                }
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"文件接收成功" message:message preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
+                [alert addAction:action];
+                [ws presentViewController:alert animated:YES completion:nil];
+            });
+        }
+    }
     
-    [self.nearbyServiceAdveriser stopAdvertisingPeer];
-    [self.nearbyServiceBrowser stopBrowsingForPeers];
-    [session disconnect];
+    //移除监听
     [self.progress removeObserver:self forKeyPath:@"completedUnitCount" context:nil];
-    
-//    NSString *destinationPath = @"/Users/sipingruan/Desktop/test";
-//    NSURL *destinationURL = [NSURL fileURLWithPath:destinationPath];
-//    //判断文件是否存在，存在则删除
-//    if ([[NSFileManager defaultManager] isDeletableFileAtPath:destinationPath]) {
-//        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:nil];
-//    }
-//    //转移文件
-//    NSError *error1 = nil;
-//    if (![[NSFileManager defaultManager] moveItemAtURL:localURL toURL:destinationURL  error:&error1]) {
-//        NSLog(@"[Error] %@", error1);
-//    }
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     NSProgress *progress = (NSProgress *)object;
+    NSLog(@"%lf", progress.fractionCompleted);
     dispatch_async(dispatch_get_main_queue(), ^{
-        int64_t numberCom = progress.completedUnitCount;
-        int64_t numberTotal = progress.totalUnitCount;
-        NSLog(@"%lld/%lld", numberCom, numberTotal);
+        [self.receiverBtn setProgressValue:progress.fractionCompleted];
     });
 }
 

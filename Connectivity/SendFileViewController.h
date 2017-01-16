@@ -13,8 +13,8 @@
 /**
  文件路径
  */
-@property (copy, nonatomic, readonly) NSURL *filePath;
+@property (copy, nonatomic, readonly) NSString *filePath;
 
-- (instancetype)initWithFilePath:(NSURL *)filePath;
+- (instancetype)initWithFilePath:(NSString *)filePath;
 
 @end

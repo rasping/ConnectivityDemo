@@ -23,7 +23,6 @@
 @property (strong,nonatomic) MCNearbyServiceAdvertiser *nearbyServiceAdveriser;
 @property (strong, nonatomic) MCNearbyServiceBrowser *nearbyServiceBrowser;
 @property (strong, nonatomic) MCPeerID *peerID;
-@property (strong, nonatomic) NSProgress *progress;
 
 @end
 
@@ -72,7 +71,7 @@
 
 #pragma mark - Public
 
-- (instancetype)initWithFilePath:(NSURL *)filePath
+- (instancetype)initWithFilePath:(NSString *)filePath
 {
     if (self = [super init]) {
         _filePath = filePath;
@@ -115,12 +114,12 @@
     //开启扫描动画
     self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(clickAnimation) userInfo:nil repeats:YES];
     
-    //创建回话
+    //创建回话(两边的回话类型必须一致)
     MCPeerID *peerID = [[MCPeerID alloc] initWithDisplayName:[[UIDevice currentDevice] name]];
     self.session = [[MCSession alloc] initWithPeer:peerID securityIdentity:nil encryptionPreference:MCEncryptionRequired];
     self.session.delegate = self;
     
-    //广播通知(广播是通过serviceType来区分，所以监听广播的serviceType必须相同)
+    //广播通知(广播是通过serviceType来区分，所以监听广播的serviceType必须相同，不然监听不到)
     self.nearbyServiceAdveriser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:peerID discoveryInfo:nil serviceType:@"rsp-sender"];
     self.nearbyServiceAdveriser.delegate = self;
     [self.nearbyServiceAdveriser startAdvertisingPeer];
@@ -182,15 +181,14 @@
 {
     //发出邀请
     //context 携带请求的附加信息
-    [self.nearbyServiceBrowser invitePeer:self.peerID toSession:self.session withContext:nil timeout:3.0];
-    self.receiverBtn.state = BtnStateConnecting;
+    [self.nearbyServiceBrowser invitePeer:self.peerID toSession:self.session withContext:nil timeout:30];
 }
 
 #pragma mark - MCNearbyServiceBrowserDelegate
 
 // 发现了附近的广播节点
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID
-      withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
+withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 {
     NSLog(@"发现了节点：%@", peerID.displayName);
     //这里只考虑一个节点的情况:发现节点就停止搜索
@@ -226,7 +224,7 @@
 
 // 收到节点邀请回调
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser
-    didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler
+didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler
 {
     //只有发送者发出邀请，接收者接收邀请
 }
@@ -243,7 +241,6 @@
 // 会话状态改变回调
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
 {
-    self.receiverBtn.state = (BtnState)state;
     switch (state) {
         case MCSessionStateNotConnected://未连接
             NSLog(@"未连接");
@@ -255,9 +252,18 @@
         {
             NSLog(@"连接完成");
             //这里利用数据源的方式来发送数据
-//            [self.session sendResourceAtURL:_filePath withName:[_filePath lastPathComponent] toPeer:[self.session.connectedPeers firstObject] withCompletionHandler:^(NSError * _Nullable error) {
-//                NSLog(@"发送源数据发生错误：%@", [error localizedDescription]);
-//            }];
+            //这里必须要用fileURLWithPath 用String会报错Unsupported resource type
+            NSProgress *progress = [self.session sendResourceAtURL:[NSURL fileURLWithPath:_filePath] withName:[_filePath lastPathComponent] toPeer:[self.session.connectedPeers firstObject] withCompletionHandler:^(NSError * _Nullable error) {
+                if (error) {
+                    NSLog(@"发送源数据发生错误：%@", [error localizedDescription]);
+                }else {
+                    __weak typeof(self) ws = self;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [ws.receiverBtn setProgressValue:0];
+                    });
+                }
+            }];
+            [progress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
         }
             break;
     }
@@ -285,42 +291,53 @@
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress
 {
     NSLog(@"数据传输开始");
-    //KVO观察
-    self.progress = progress;
-    [progress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 // 数据传输完成回调
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(nullable NSError *)error
 {
-    NSLog(@"数据传输结束%@", localURL.absoluteString);
-    [self.nearbyServiceAdveriser stopAdvertisingPeer];
-    [self.nearbyServiceBrowser stopBrowsingForPeers];
-    [session disconnect];
-    [self.progress removeObserver:self forKeyPath:@"completedUnitCount" context:nil];
-    
-    //转移文件
-//    NSString *destinationPath = @"";
-//    NSURL *destinationURL = [NSURL fileURLWithPath:destinationPath];
-//    if ([[NSFileManager defaultManager] isDeletableFileAtPath:destinationPath]) {
-//        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:nil];
-//    }
-//    NSError *error1 = nil;
-//    if (![[NSFileManager defaultManager] moveItemAtURL:localURL toURL:destinationURL  error:&error1]) {
-//        NSLog(@"[Error] %@", error1);
-//    }
+    NSLog(@"数据传输结束%@----%@", localURL.absoluteString, error);
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     NSProgress *progress = (NSProgress *)object;
-    int64_t numberCom = progress.completedUnitCount;
-    int64_t numberTotal = progress.totalUnitCount;
-    CGFloat precentage = numberCom / numberTotal;
-    NSLog(@"%f", precentage);
+    NSLog(@"%lf", progress.fractionCompleted);
+    __weak typeof(self) ws = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.receiverBtn setProgressValue:precentage];
+        if (progress.fractionCompleted > 0) {
+            [ws.receiverBtn setProgressValue:progress.fractionCompleted];
+        }
     });
+    if (progress.fractionCompleted == 1.0) {
+        [progress removeObserver:self forKeyPath:@"completedUnitCount" context:nil];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"文件发送成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [ws.receiverBtn setProgressValue:0];
+            }];
+            [alert addAction:action];
+            [ws presentViewController:alert animated:YES completion:^{
+                //移除本地的临时文件
+                NSFileManager *manager = [NSFileManager defaultManager];
+                NSError *err = nil;
+                BOOL ret = [manager removeItemAtPath:_filePath error:&err];
+                if (!ret) {
+                    NSLog(@"删除临时文件出错：err = %@", err.localizedDescription);
+                }
+            }];
+        });
+        
+        //移除本地的临时文件
+        //传输完成不能马上移除本地的临时文件，不然接收端会出现localURL参数为空  报错为：Peer no longer connected
+//        NSFileManager *manager = [NSFileManager defaultManager];
+//        NSError *err = nil;
+//        BOOL ret = [manager removeItemAtPath:_filePath error:&err];
+//        if (!ret) {
+//            NSLog(@"删除临时文件出错：err = %@", err.localizedDescription);
+//        }
+    }
 }
 
 @end

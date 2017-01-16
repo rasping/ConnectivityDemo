@@ -12,7 +12,6 @@
 
 @property (weak, nonatomic) UIButton *icon;
 @property (weak, nonatomic) CAShapeLayer *shapeLayer;
-@property (weak, nonatomic) UIVisualEffectView *effectView;
 
 @end
 
@@ -50,7 +49,7 @@
     CGFloat shapeY = (rect.size.height - shapeWH) * 0.5;
     shapeLayer.frame = CGRectMake(shapeX, shapeY, shapeWH, shapeWH);
     shapeLayer.fillColor = [UIColor clearColor].CGColor;
-    shapeLayer.strokeColor = [UIColor whiteColor].CGColor;
+    shapeLayer.strokeColor = [UIColor grayColor].CGColor;
     shapeLayer.lineCap = kCALineCapRound;
     shapeLayer.lineJoin = kCALineJoinRound;
     shapeLayer.strokeStart = 0.0;
@@ -73,13 +72,6 @@
     [self addSubview:icon];
     self.icon = icon;
     
-    //blurEffect
-    UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
-    effectView.hidden = YES;
-    [icon addSubview:effectView];
-    self.effectView = effectView;
-    
     //nickName
     UILabel *lable = [[UILabel alloc] init];
     lable.textAlignment = NSTextAlignmentCenter;
@@ -100,9 +92,6 @@
     CGFloat icony = (rect.size.height - iconWH) * 0.5;
     self.icon.frame = CGRectMake(iconX, icony, iconWH, iconWH);
     self.icon.layer.cornerRadius = iconWH * 0.5;
-    
-    //effectView
-    self.effectView.frame = self.icon.bounds;
     
     //nickName
     CGFloat lableH = 21;
@@ -128,31 +117,6 @@
 {
     _progressValue = MAX(0.0, MIN(1.0, value));
     self.shapeLayer.strokeEnd += _progressValue;
-}
-
-- (void)setState:(BtnState)state
-{
-    _state = state;
-    switch (state) {
-        case BtnStateNotConnected:
-        {
-            [self.icon setTitle:@"" forState:UIControlStateNormal];
-            self.effectView.alpha = 0.0;
-        }
-            break;
-        case BtnStateConnecting:
-        {
-            [self.icon setTitle:@"连接中..." forState:UIControlStateNormal];
-            self.effectView.alpha = 0.6;
-        }
-            break;
-        case BtnStateConnected:
-        {
-            [self.icon setTitle:@"发送中..." forState:UIControlStateNormal];
-            self.effectView.alpha = 0.6;
-        }
-            break;
-    }
 }
 
 - (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents

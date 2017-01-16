@@ -28,6 +28,9 @@
 		B24F76E41E1F305A00CA8146 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B24F76E31E1F305A00CA8146 /* Assets.xcassets */; };
 		B24F76E71E1F305A00CA8146 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B24F76E51E1F305A00CA8146 /* LaunchScreen.storyboard */; };
 		B24F76F21E1F305A00CA8146 /* ConnectivityUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B24F76F11E1F305A00CA8146 /* ConnectivityUITests.m */; };
+		B26150E41E2C5897003B276A /* LocalFile in Resources */ = {isa = PBXBuildFile; fileRef = B26150E31E2C5897003B276A /* LocalFile */; };
+		B26150E81E2C66A5003B276A /* LocalFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B26150E61E2C66A5003B276A /* LocalFileViewController.m */; };
+		B26150E91E2C66A5003B276A /* LocalFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B26150E71E2C66A5003B276A /* LocalFileViewController.xib */; };
 		B27A6CD01E286B5400CD0475 /* ProgressIconBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = B27A6CCF1E286B5400CD0475 /* ProgressIconBtn.m */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +90,10 @@
 		B24F76ED1E1F305A00CA8146 /* ConnectivityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectivityUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B24F76F11E1F305A00CA8146 /* ConnectivityUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConnectivityUITests.m; sourceTree = "<group>"; };
 		B24F76F31E1F305A00CA8146 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B26150E31E2C5897003B276A /* LocalFile */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LocalFile; sourceTree = "<group>"; };
+		B26150E51E2C66A5003B276A /* LocalFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalFileViewController.h; sourceTree = "<group>"; };
+		B26150E61E2C66A5003B276A /* LocalFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalFileViewController.m; sourceTree = "<group>"; };
+		B26150E71E2C66A5003B276A /* LocalFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocalFileViewController.xib; sourceTree = "<group>"; };
 		B27A6CCE1E286B5400CD0475 /* ProgressIconBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressIconBtn.h; sourceTree = "<group>"; };
 		B27A6CCF1E286B5400CD0475 /* ProgressIconBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressIconBtn.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,11 +169,15 @@
 		B24F76D31E1F305A00CA8146 /* Connectivity */ = {
 			isa = PBXGroup;
 			children = (
+				B26150E31E2C5897003B276A /* LocalFile */,
 				B249CCE11E276BA40017633D /* Masonry */,
 				B24F76D71E1F305A00CA8146 /* AppDelegate.h */,
 				B24F76D81E1F305A00CA8146 /* AppDelegate.m */,
 				B24F76DA1E1F305A00CA8146 /* ViewController.h */,
 				B24F76DB1E1F305A00CA8146 /* ViewController.m */,
+				B26150E51E2C66A5003B276A /* LocalFileViewController.h */,
+				B26150E61E2C66A5003B276A /* LocalFileViewController.m */,
+				B26150E71E2C66A5003B276A /* LocalFileViewController.xib */,
 				B203EBD81E236D9E00756E48 /* SendFileViewController.h */,
 				B203EBD91E236D9E00756E48 /* SendFileViewController.m */,
 				B20451E31E24C72B00EB3BD1 /* AnimationView.h */,
@@ -251,7 +262,7 @@
 				TargetAttributes = {
 					B24F76D01E1F305A00CA8146 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = XTX8T47464;
+						DevelopmentTeam = HV78NKBU8W;
 						ProvisioningStyle = Automatic;
 					};
 					B24F76EC1E1F305A00CA8146 = {
@@ -286,6 +297,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B26150E91E2C66A5003B276A /* LocalFileViewController.xib in Resources */,
+				B26150E41E2C5897003B276A /* LocalFile in Resources */,
 				B24F76E71E1F305A00CA8146 /* LaunchScreen.storyboard in Resources */,
 				B24F76E41E1F305A00CA8146 /* Assets.xcassets in Resources */,
 				B24F76DF1E1F305A00CA8146 /* Main.storyboard in Resources */,
@@ -324,6 +337,7 @@
 				B20451E51E24C72B00EB3BD1 /* AnimationView.m in Sources */,
 				B249CD041E276BA40017633D /* ViewController+MASAdditions.m in Sources */,
 				B203EBDA1E236D9E00756E48 /* SendFileViewController.m in Sources */,
+				B26150E81E2C66A5003B276A /* LocalFileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,11 +471,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = XTX8T47464;
+				DEVELOPMENT_TEAM = HV78NKBU8W;
 				INFOPLIST_FILE = Connectivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = rasping.Pabei.Connectivity;
+				PRODUCT_BUNDLE_IDENTIFIER = rasping.Connectivity.com;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -470,11 +484,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = XTX8T47464;
+				DEVELOPMENT_TEAM = HV78NKBU8W;
 				INFOPLIST_FILE = Connectivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = rasping.Pabei.Connectivity;
+				PRODUCT_BUNDLE_IDENTIFIER = rasping.Connectivity.com;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

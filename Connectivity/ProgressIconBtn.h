@@ -8,12 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, BtnState) {
-    BtnStateNotConnected,
-    BtnStateConnecting,
-    BtnStateConnected
-};
-
 /**
  带进度条的图像按钮
  */
@@ -32,13 +26,9 @@ typedef NS_ENUM(NSInteger, BtnState) {
  */
 @property (assign, nonatomic) CGFloat progressWidth;
 /**
- 进度条颜色(默认白色)
+ 进度条颜色(默认灰色)
  */
 @property (strong, nonatomic) UIColor *progressColor;
-/**
- 按钮状态
- */
-@property (assign, nonatomic) BtnState state;
 /**
  绑定icon按钮的点击事件
  */

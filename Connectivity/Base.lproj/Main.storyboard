@@ -55,16 +55,25 @@
                                     <segue destination="Mah-XQ-dB1" kind="show" identifier="" id="1RC-3m-fYZ"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Yd8-gr-gMi">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6Me-da-5OG" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="32x-eT-S8O"/>
+                            <constraint firstItem="Yd8-gr-gMi" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="KEO-mX-rKS"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Z4-LN-yNe" secondAttribute="bottom" constant="200" id="OKf-JV-w5g"/>
+                            <constraint firstItem="Yd8-gr-gMi" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="UaC-0Z-iFO"/>
                             <constraint firstItem="2Z4-LN-yNe" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="haP-QY-hlC"/>
                             <constraint firstItem="6Me-da-5OG" firstAttribute="top" secondItem="2Z4-LN-yNe" secondAttribute="bottom" constant="30" id="r4Z-Fs-hFB"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="角色选择" id="zXz-5s-alH"/>
+                    <connections>
+                        <outlet property="indicatorView" destination="Yd8-gr-gMi" id="xMA-qH-I19"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
