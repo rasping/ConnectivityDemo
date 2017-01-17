@@ -1,13 +1,17 @@
 >Multipeer connectivity是一个使附近设备通过Wi-Fi网络、P2P Wi-Fi以及蓝牙个人局域网进行通信的框架。互相链接的节点可以安全地传递信息、流或是其他文件资源，而不用通过网络服务。
 
 ##概述
+
 ![多点连接](http://upload-images.jianshu.io/upload_images/1344789-8c3d1f98888e6b6a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 从上图中可以看出Multipeer Connectivity的功能与利用AirDrop传输文件非常类似，也可以将其看做是Apple对AirDrop不能直接开发的补偿，关于Multipeer Connectivity与AirDrop之间的对比，可参考[《MultipeerConnectivity.framework梳理》](http://blog.csdn.net/phunxm/article/details/43450167)
+
 因为iOS系统中用户不能直接对文件进行操作，所以这个框架很少会在app中使用到。这就导致了网上很少有关于介绍这个框架的博文，至于可供参考的demo那就更加少之又少了。但这并不意味着这个技术不实用，像QQ的面对面快传(免流量)功能就是利用这个框架实现的。所以我利用这个框架实现了一个文件传输的demo，这里分享出来，供大家一起学习。
 ##实现功能
 demo最终实现的效果图如下：
 ![效果图.jpeg](http://upload-images.jianshu.io/upload_images/1344789-16c95dfdd5799524.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 实现功能如下：
+
 1.   可选择相册中的图片、视频进行传送
 2.  可将想传送的文件移动到工程中LocaFile目录下，然后选择本地文件就可传送
 3.  可扫描附近节点（只做了一个节点连接的情况 ）
@@ -43,6 +47,7 @@ demo最终实现的效果图如下：
     [self.nearbyServiceAdveriser startAdvertisingPeer];
 ```
 这里有三个地方需要注意：
+
 1.  在初始化MCNearbyServiceAdvertiser 和MCNearbyServiceBrowser 对象时，传入的serviceType参数，这个参数必须满足：长度在1至15个字符之间，由ASCII字母、数字和“-”组成，不能以“-”为开头或结尾，不能包含除了“-“之外的其他特殊字符，否则会报MCErrorInvalidParameter错误。
 2.  在监听广播通知时传入的参数serviceType必须与发送广播时传入的参数一致，否则无法监听到广播。
 3.  发送端和接收端创建的会话对象类型和加密方式等必须一致，否则无法收到对方的连接请求。
@@ -146,6 +151,7 @@ didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)c
 
 session提供了三种数据传输方式：普通数据传输(data)、数据流传输(streams)、数据源传输(resources)，这里使用第三种，关于三种数据传输方式的使用及场景，可参考[《 iOS--MultipeerConnectivity蓝牙通讯》](http://blog.csdn.net/daiyibo123/article/details/48287079)。
 这里有两个地方需要注意：
+
 1.  发送数据传入的resourceURL参数是文件在本地的路径，必须使用fileURLWithPath:创建，使用URLWithString:会报Unsupported resource type错误。
 2.  因为传输的文件可能是临时文件，所以传输完成需要移除临时文件，但这里传输完成不能马上移除本地文件，否则接收端会在文件接收快要完成时会出现localURL参数为空  报错为：Peer no longer connected，具体原因不明。
 接收端：
