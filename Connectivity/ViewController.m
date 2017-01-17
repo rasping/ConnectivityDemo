@@ -12,6 +12,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ProgressIconBtn.h"
 #import "LocalFileViewController.h"
+#import <ExternalAccessory/ExternalAccessory.h>
 
 @interface ViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate, LocalFileVCDelegate>
 

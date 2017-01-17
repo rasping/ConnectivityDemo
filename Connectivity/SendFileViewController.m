@@ -114,7 +114,7 @@
     //开启扫描动画
     self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(clickAnimation) userInfo:nil repeats:YES];
     
-    //创建回话(两边的回话类型必须一致)
+    //创建会话(两边的回话类型必须一致)
     MCPeerID *peerID = [[MCPeerID alloc] initWithDisplayName:[[UIDevice currentDevice] name]];
     self.session = [[MCSession alloc] initWithPeer:peerID securityIdentity:nil encryptionPreference:MCEncryptionRequired];
     self.session.delegate = self;
@@ -267,12 +267,6 @@ didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)c
         }
             break;
     }
-}
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    NSString *data = @"hello";
-    [self.session sendData:[data dataUsingEncoding:NSUTF8StringEncoding] toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
 // 普通数据传输

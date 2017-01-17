@@ -207,20 +207,21 @@ didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)c
     
     //交互选择框
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@请求与你建立连接", peerID.displayName] preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *reject = [UIAlertAction actionWithTitle:@"拒绝" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        invitationHandler(NO, self.session);
-    }];
-    [alert addAction:reject];
     UIAlertAction *accept = [UIAlertAction actionWithTitle:@"接受" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         invitationHandler(YES, self.session);
     }];
     [alert addAction:accept];
+    UIAlertAction *reject = [UIAlertAction actionWithTitle:@"拒绝" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        invitationHandler(NO, self.session);
+    }];
+    [alert addAction:reject];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
 // 广播失败回调
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error
 {
+    [advertiser stopAdvertisingPeer];
     NSLog(@"%@节点广播失败", advertiser.myPeerID.displayName);
 }
 
