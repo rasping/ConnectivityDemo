@@ -1,3 +1,4 @@
+#基于MultipeerConnectivity Framework的文件传输
 >Multipeer connectivity是一个使附近设备通过Wi-Fi网络、P2P Wi-Fi以及蓝牙个人局域网进行通信的框架。互相链接的节点可以安全地传递信息、流或是其他文件资源，而不用通过网络服务。
 
 ##概述
@@ -14,14 +15,15 @@ demo最终实现的效果图如下：
 
 实现功能如下：
 
-1.   可选择相册中的图片、视频进行传送
+1.  可选择相册中的图片、视频进行传送
 2.  可将想传送的文件移动到工程中LocaFile目录下，然后选择本地文件就可传送
 3.  可扫描附近节点（只做了一个节点连接的情况 ）
 4.  监控传输进度
 
 ##连接
-要想让两个设备间能进行通信，必先让他们知道对象，这个过程就称之为连接。在Multipeer Connectivity框架中则是使用广播（Advertisting）和发现（Disconvering）模式来进行连接：假设有两台设备A、B，B作为广播去发送自身服务，A作为发现的客户端。一旦A发现了B就试图建立连接，经过B同意二者建立连接就可以相互发送数据。关于连接过程的更详尽介绍，可参考[《 iOS--MultipeerConnectivity蓝牙通讯》](http://blog.csdn.net/daiyibo123/article/details/48287079)。初始化代码如下
-发送端代码：
+要想让两个设备间能进行通信，必先让他们知道对方，这个过程就称之为连接。在Multipeer Connectivity框架中则是使用广播（Advertisting）和发现（Disconvering）模式来进行连接：假设有两台设备A、B，B作为广播去发送自身服务，A作为发现的客户端。一旦A发现了B就试图建立连接，经过B同意二者建立连接就可以相互发送数据。关于连接过程的更详尽介绍，可参考[《 iOS--MultipeerConnectivity蓝牙通讯》](http://blog.csdn.net/daiyibo123/article/details/48287079)。连接之前必须先初始化广播（Advertisting）和发现（Disconvering）两个对象，才能利用他们来进行连接。具体初始化代码如下
+
+发送端：
 
 ```
    //创建会话
@@ -35,7 +37,7 @@ demo最终实现的效果图如下：
     [self.nearbyServiceBrowser startBrowsingForPeers];
 ```
 
-接收端代码：
+接收端：
 
 ```
     //创建会话
@@ -54,6 +56,7 @@ demo最终实现的效果图如下：
 2.  在监听广播通知时传入的参数serviceType必须与发送广播时传入的参数一致，否则无法监听到广播。
 3.  发送端和接收端创建的会话对象类型和加密方式等必须一致，否则无法收到对方的连接请求。
 初始化完成就要处理两端之间相互交互的逻辑了，具体代码如下：
+
 发送端：
 
 ```
@@ -88,6 +91,7 @@ withDiscoveryInfo:(nullable NSDictionary<NSString *, NSString *> *)info
 ```
 
 这里需要注意：发出邀请有时间限制，当超出时限，接收端同意连接会报MCErrorTimedOut错误。
+
 接收端：
 
 ```
@@ -120,6 +124,7 @@ didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(nullable NSData *)c
 至此，双方通信链路协商成功，可以开始基于session向对方发送数据。
 ##数据发送
 发送代码如下
+
 发送端：
 
 ```
@@ -156,6 +161,7 @@ session提供了三种数据传输方式：普通数据传输(data)、数据流�
 
 1.  发送数据传入的resourceURL参数是文件在本地的路径，必须使用fileURLWithPath:创建，使用URLWithString:会报Unsupported resource type错误。
 2.  因为传输的文件可能是临时文件，所以传输完成需要移除临时文件，但这里传输完成不能马上移除本地文件，否则接收端会在文件接收快要完成时会出现localURL参数为空  报错为：Peer no longer connected，具体原因不明。
+
 接收端：
 
 ```
