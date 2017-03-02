@@ -116,7 +116,7 @@
 - (void)setProgressValue:(CGFloat)value
 {
     _progressValue = MAX(0.0, MIN(1.0, value));
-    self.shapeLayer.strokeEnd += _progressValue;
+    self.shapeLayer.strokeEnd = _progressValue;
 }
 
 - (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents
